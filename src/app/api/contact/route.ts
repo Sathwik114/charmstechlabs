@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import prisma from '@/lib/db';
+import { createContactEnquiry } from '@/lib/db';
 
 function generateEnquiryCode(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -43,15 +43,13 @@ export async function POST(request: Request) {
 
     const enquiryCode = generateEnquiryCode();
 
-    const enquiry = await prisma.contactEnquiry.create({
-      data: {
-        enquiryCode,
-        name: name.trim(),
-        email: email.trim(),
-        mobile: mobile.trim(),
-        subject: subject.trim(),
-        message: message.trim(),
-      },
+    const enquiry = await createContactEnquiry({
+      enquiryCode,
+      name: name.trim(),
+      email: email.trim(),
+      mobile: mobile.trim(),
+      subject: subject.trim(),
+      message: message.trim(),
     });
 
     return NextResponse.json({

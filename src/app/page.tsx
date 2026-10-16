@@ -1,5 +1,8 @@
 import Link from "next/link";
-import prisma from "@/lib/db";
+import {
+  getFeaturedProjects,
+  getProjectCount,
+} from "@/lib/db";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { HeroShowcase } from "@/components/home/HeroShowcase";
 import { LiveTicker } from "@/components/ui/LiveTicker";
@@ -29,18 +32,10 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [totalProjects, btechCount, mtechCount, featuredProjects] = await Promise.all([
-    prisma.project.count(),
-    prisma.project.count({ where: { degree: "B.Tech" } }),
-    prisma.project.count({ where: { degree: "M.Tech" } }),
-    prisma.project.findMany({
-      take: 6,
-      where: { isPublished: true },
-      include: {
-        category: true,
-        technologies: true,
-      },
-      orderBy: { createdAt: "desc" },
-    }),
+    getProjectCount(),
+    getProjectCount("B.Tech"),
+    getProjectCount("M.Tech"),
+    getFeaturedProjects(6),
   ]);
 
   const techDomains = [

@@ -1,15 +1,10 @@
-import prisma from '@/lib/db';
+import { getAdminCourses } from '@/lib/db';
 import { GraduationCap, BookOpen, Star, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCoursesPage() {
-  const courses = await prisma.course.findMany({
-    include: {
-      _count: { select: { modules: true } }
-    },
-    orderBy: { createdAt: 'desc' }
-  });
+  const courses = await getAdminCourses();
 
   return (
     <div>

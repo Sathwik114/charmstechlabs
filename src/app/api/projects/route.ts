@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import { getPublishedProjects } from '@/lib/db';
 
 export async function GET(request: Request) {
   try {
@@ -7,16 +7,9 @@ export async function GET(request: Request) {
     const categoryId = searchParams.get('category');
     const degree = searchParams.get('degree');
 
-    const where: any = { isPublished: true };
-    if (categoryId) where.categoryId = categoryId;
-    if (degree) where.degree = degree;
-
-    const projects = await prisma.project.findMany({
-      where,
-      include: {
-        category: true,
-        technologies: true,
-      },
+    const projects = await getPublishedProjects({
+      categoryId,
+      degree,
     });
     
     return NextResponse.json(projects);

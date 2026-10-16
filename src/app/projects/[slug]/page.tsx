@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import { getProjectBySlug, getRelatedProjects } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -30,33 +30,17 @@ export default async function ProjectDetailsPage({
   params: Promise<{ slug: string }>;
 }) {
   const resolvedParams = await params;
-  const project = await prisma.project.findUnique({
-    where: { slug: resolvedParams.slug },
-    include: {
-      category: true,
-      technologies: true,
-      modules: { orderBy: { displayOrder: "asc" } },
-      features: { orderBy: { displayOrder: "asc" } },
-    },
+  const project = await getProjectBySlug(resolvedParams.slug, {
+    modules: true,
+    features: true,
   });
 
-  if (!project || !project.isPublished) {
+  if (!project) {
     notFound();
   }
 
   // Fetch 3 related projects in the same category
-  const relatedProjects = await prisma.project.findMany({
-    where: {
-      categoryId: project.categoryId,
-      id: { not: project.id },
-      isPublished: true,
-    },
-    take: 3,
-    include: {
-      category: true,
-      technologies: true,
-    },
-  });
+  const relatedProjects = await getRelatedProjects(project.categoryId, project.id);
 
   const isBTech = project.degree === "B.Tech";
 

@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import { getProjectCategories, getPublishedProjects } from "@/lib/db";
 import { ProjectCatalogClient } from "@/components/projects/ProjectCatalogClient";
 import { LiveTicker } from "@/components/ui/LiveTicker";
 import {
@@ -26,18 +26,8 @@ export default async function ProjectsPage({
 
   // Fetch all published projects & categories
   const [projects, categories] = await Promise.all([
-    prisma.project.findMany({
-      where: { isPublished: true },
-      include: {
-        category: true,
-        technologies: true,
-      },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.projectCategory.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-    }),
+    getPublishedProjects(),
+    getProjectCategories(),
   ]);
 
   const btechTotal = projects.filter((p) => p.degree === "B.Tech").length;
@@ -144,7 +134,7 @@ export default async function ProjectsPage({
       <section className="py-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           <ProjectCatalogClient
-            initialProjects={projects as any}
+            initialProjects={projects}
             categories={categories}
             initialDegree={degreeParam}
             initialCategory={categoryParam}

@@ -1,14 +1,11 @@
-import prisma from '@/lib/db';
+import { getProjectRequests } from '@/lib/db';
 import { FileText, Search, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminRequestsPage() {
-  const requests = await prisma.projectRequest.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: { project: true }
-  });
+  const requests = await getProjectRequests();
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500">

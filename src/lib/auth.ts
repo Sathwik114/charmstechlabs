@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "@/lib/db";
+import { countAdminUsers, createAdminUser, getAdminUserByEmail } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
@@ -17,22 +17,18 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Auto-setup: If no admin exists, create the default one
-        const adminCount = await prisma.adminUser.count();
+        const adminCount = await countAdminUsers();
         if (adminCount === 0) {
           const hashedPassword = await bcrypt.hash("admin123", 10);
-          await prisma.adminUser.create({
-            data: {
-              email: "admin@charmstechlabs.com",
-              name: "Super Admin",
-              passwordHash: hashedPassword,
-              role: "admin"
-            }
+          await createAdminUser({
+            email: "admin@charmstechlabs.com",
+            name: "Super Admin",
+            passwordHash: hashedPassword,
+            role: "admin"
           });
         }
 
-        const user = await prisma.adminUser.findUnique({
-          where: { email: credentials.email }
-        });
+        const user = await getAdminUserByEmail(credentials.email);
 
         if (!user || !user.isActive) {
           throw new Error("User not found or disabled");

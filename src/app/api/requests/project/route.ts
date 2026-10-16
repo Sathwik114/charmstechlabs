@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import { createProjectRequest } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
@@ -10,21 +10,19 @@ export async function POST(request: Request) {
     const randomDigits = Math.floor(10000 + Math.random() * 90000);
     const requestCode = `CHARMS-PRJ-${year}-${randomDigits}`;
 
-    const newRequest = await prisma.projectRequest.create({
-      data: {
-        requestCode,
-        projectId: body.projectId || null,
-        fullName: body.fullName,
-        mobile: body.mobile,
-        email: body.email,
-        college: body.college,
-        degree: body.degree,
-        branch: body.branch,
-        year: body.year,
-        preferredContact: body.preferredContact || 'Email',
-        message: body.message || '',
-        status: 'New',
-      },
+    const newRequest = await createProjectRequest({
+      requestCode,
+      projectId: body.projectId || null,
+      fullName: body.fullName,
+      mobile: body.mobile,
+      email: body.email,
+      college: body.college,
+      degree: body.degree,
+      branch: body.branch,
+      year: body.year,
+      preferredContact: body.preferredContact || 'Email',
+      message: body.message || '',
+      status: 'New',
     });
 
     return NextResponse.json(

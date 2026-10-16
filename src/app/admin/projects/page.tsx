@@ -1,23 +1,11 @@
-import prisma from '@/lib/db';
+import { getAdminProjects } from '@/lib/db';
 import Link from 'next/link';
 import { BookOpen, ExternalLink, FileText, CheckCircle2, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminProjectsPage() {
-  const projects = await prisma.project.findMany({
-    include: {
-      category: true,
-      _count: {
-        select: {
-          requests: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
+  const projects = await getAdminProjects();
 
   const totalProjects = projects.length;
   const publishedProjects = projects.filter((p) => p.isPublished).length;

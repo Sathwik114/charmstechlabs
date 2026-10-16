@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "npx prisma generate && npx prisma db push --accept-data-loss && npx tsx prisma/seed.ts && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate-local": "tsx scripts/migrate-local-sqlite.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.4.1",
+    "@libsql/client": "^0.15.15",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -30,7 +31,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.0.0",
-    "prisma": "^6.4.1",
     "tailwindcss": "^4",
     "tsx": "^4.19.2",
     "typescript": "^5"

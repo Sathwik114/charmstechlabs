@@ -1,4 +1,4 @@
-import prisma from '@/lib/db';
+import { getCourseCount, getProjectCount, getRequestCount } from '@/lib/db';
 import { Users, FileText, Briefcase, Mail } from 'lucide-react';
 import Link from 'next/link';
 
@@ -11,10 +11,10 @@ export default async function AdminDashboard() {
     totalProjects,
     totalCourses
   ] = await Promise.all([
-    prisma.projectRequest.count(),
-    prisma.projectRequest.count({ where: { status: 'New' } }),
-    prisma.project.count(),
-    prisma.course.count(),
+    getRequestCount(),
+    getRequestCount('New'),
+    getProjectCount(),
+    getCourseCount(),
   ]);
 
   return (

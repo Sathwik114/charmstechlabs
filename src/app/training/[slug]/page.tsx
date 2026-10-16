@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import { getCourseBySlug } from "@/lib/db";
 import { notFound } from "next/navigation";
 import {
   Clock,
@@ -24,13 +24,7 @@ export default async function CourseDetailsPage({
   params: Promise<{ slug: string }>;
 }) {
   const resolvedParams = await params;
-  const course = await prisma.course.findUnique({
-    where: { slug: resolvedParams.slug, status: "Available" },
-    include: {
-      modules: { orderBy: { displayOrder: "asc" } },
-      technologies: true,
-    },
-  });
+  const course = await getCourseBySlug(resolvedParams.slug, "Available");
 
   if (!course) {
     notFound();

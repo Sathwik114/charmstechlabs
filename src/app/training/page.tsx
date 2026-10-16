@@ -16,18 +16,14 @@ import {
   ShieldCheck,
   GraduationCap,
 } from "lucide-react";
-import prisma from "@/lib/db";
+import { getCourses } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export default async function TrainingPage() {
-  const courses = await prisma.course.findMany({
-    where: { status: "Available" },
-    include: {
-      modules: { orderBy: { displayOrder: "asc" } },
-      technologies: true,
-    },
-    orderBy: { createdAt: "desc" },
+  const courses = await getCourses({
+    status: "Available",
+    includeModules: true,
   });
 
   return (

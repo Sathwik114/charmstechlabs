@@ -1,4 +1,4 @@
-import prisma from '@/lib/db';
+import { getRegistrations } from '@/lib/db';
 import { 
   Users, 
   GraduationCap, 
@@ -54,9 +54,7 @@ function formatDate(date: Date) {
 }
 
 export default async function TrainingRegistrationsPage() {
-  const registrations = await prisma.registration.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  const registrations = await getRegistrations();
 
   const totalCount = registrations.length;
   const newCount = registrations.filter(r => r.status?.toLowerCase() === 'new').length;
