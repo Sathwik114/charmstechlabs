@@ -1,5 +1,6 @@
 import { createClient, type Client, type InValue } from "@libsql/client";
 import { randomUUID } from "node:crypto";
+import { resolve } from "node:path";
 
 type Row = Record<string, unknown>;
 
@@ -143,9 +144,13 @@ let schemaPromise: Promise<void> | undefined;
 
 function getClient(): Client {
   if (!client) {
-    const url = process.env.TURSO_DATABASE_URL;
+    const url =
+      process.env.TURSO_DATABASE_URL ||
+      (process.env.NODE_ENV !== "production"
+        ? `file:${resolve(process.cwd(), "prisma", "dev.db")}`
+        : undefined);
     if (!url) {
-      throw new Error("TURSO_DATABASE_URL must be configured to connect to the database.");
+      throw new Error("TURSO_DATABASE_URL must be configured in production.");
     }
 
     const authToken = process.env.TURSO_AUTH_TOKEN;

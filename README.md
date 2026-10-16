@@ -4,16 +4,14 @@ Next.js application using Turso/libSQL, a hosted SQLite-compatible database.
 
 ## Local development
 
-1. Create a Turso database and generate an authentication token.
-2. Copy `.env.example` to `.env.local` and set `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, and `NEXTAUTH_SECRET`.
-3. Install dependencies and start the app:
+1. Install dependencies and start the app:
 
    ```bash
    npm install
    npm run dev
    ```
 
-The application creates its tables automatically on its first database request. The Next.js build does not connect to the database.
+Without Turso variables, development uses the existing `prisma/dev.db` SQLite database. To use a Turso database locally instead, copy `.env.example` to `.env.local` and set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`. Set `NEXTAUTH_SECRET` for authentication. The application creates its tables automatically on its first database request. The Next.js build does not connect to the database.
 
 ## Deploying to Vercel
 
